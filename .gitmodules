@@ -1,0 +1,6 @@
+[submodule "vendor/lodepng"]
+	path = vendor/lodepng
+	url = https://github.com/lvandeve/lodepng.git
+[submodule "vendor/libattopng"]
+	path = vendor/libattopng
+	url = https://github.com/jonlamb-gh/libattopng.git
