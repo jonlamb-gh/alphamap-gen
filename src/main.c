@@ -18,8 +18,8 @@ enum option_kind
     OPTION_VERBOSE = 1,
     OPTION_INPUT_FILE = 2,
     OPTION_OUTPUT_FILE = 3,
-    OPTION_BLEND_OVERLAP = 4,
-    OPTION_INVERT = 5
+    OPTION_INVERT = 4,
+    OPTION_BLEND_OVERLAP = 5
 };
 
 int main(int argc, char **argv)
@@ -37,6 +37,9 @@ int main(int argc, char **argv)
 
     config.invert = 0;
     config.blend_overlap = 10;
+    config.blend_offset = 25;
+    config.blend_constrain_min = 100;
+    config.blend_constrain_max = 255;
 
     config.input_file = (char*) "heightmap.png";
     config.output_file = (char*) "alphamap.png";
@@ -74,15 +77,6 @@ int main(int argc, char **argv)
 
         },
         {
-            "blend-overlap",
-            '\0',
-            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
-            &config.blend_overlap,
-            OPTION_BLEND_OVERLAP,
-            "Blending overlap value",
-            "0:85"
-        },
-        {
             "invert",
             '\0',
             POPT_ARG_NONE,
@@ -90,6 +84,15 @@ int main(int argc, char **argv)
             OPTION_INVERT,
             "Invert heightmap values",
             NULL
+        },
+        {
+            "blend-overlap",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.blend_overlap,
+            OPTION_BLEND_OVERLAP,
+            "Blending overlap value",
+            "0:85"
         },
         POPT_AUTOHELP
         POPT_TABLEEND

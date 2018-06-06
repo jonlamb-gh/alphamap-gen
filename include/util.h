@@ -12,6 +12,9 @@ typedef struct
     int verbose;
     int invert;
     int blend_overlap;
+    int blend_offset;
+    int blend_constrain_min;
+    int blend_constrain_max;
     char *input_file;
     char *output_file;
 } config_s;

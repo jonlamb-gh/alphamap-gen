@@ -9,12 +9,28 @@
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
-// TODO - add some read-png() logic to libattopng
-// TODO - use assertions/sanity-checks
 #include "lodepng.h"
 #include "libattopng.h"
 #include "util.h"
+
+#ifndef CONSTRAIN
+#define CONSTRAIN(amt, low, high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#endif
+
+static uint8_t constrain_color_channel(
+        const config_s * const config,
+        const uint16_t value)
+{
+    assert(config->blend_offset >= 0);
+
+    const uint16_t min = CONSTRAIN(config->blend_constrain_min, 0, 255);
+    const uint16_t max = CONSTRAIN(config->blend_constrain_max, min, 255);
+    const uint16_t val = value + (uint16_t) config->blend_offset;
+
+    return (uint8_t) CONSTRAIN(val, min, max);
+}
 
 void image_data_free(
         image_data_s * const image_data)
@@ -109,6 +125,8 @@ int write_rgba32_png(
 }
 
 // TODO - probably a better way to do this
+// - add cli-opts for contstaints and offsets
+//
 // 0 - 255 (higher to lower)
 // blue - green - red
 //
@@ -117,7 +135,6 @@ int write_rgba32_png(
 // 85:169 -> green 0:255
 // 170:255 -> red 0:255
 //
-// constraints (min shouldn't be lower than x)?
 void blend_magnitude_rgb(
         const config_s * const config,
         const unsigned char magn,
@@ -174,6 +191,21 @@ void blend_magnitude_rgb(
         {
             *green = (magnitude - t0_neg_overlap) * num_subchannels;
         }
+    }
+
+    if(*red != 0)
+    {
+        *red = constrain_color_channel(config, *red);
+    }
+
+    if(*green != 0)
+    {
+        *green = constrain_color_channel(config, *green);
+    }
+
+    if(*blue != 0)
+    {
+        *blue = constrain_color_channel(config, *blue);
     }
 }
 

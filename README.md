@@ -4,6 +4,8 @@ Generate RGBA alpha map png file from a heightmap png
 ## TODO
 
 - better color mapping and blending
+- per channel constraints/offsets
+- add some read-png() logic to `libattopng` and remove `lodepng`
 
 ## Dependencies
 
