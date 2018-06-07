@@ -9,12 +9,21 @@
 
 typedef struct
 {
+    int offset;
+    int min;
+    int max;
+} blend_constraints_s;
+
+typedef struct
+{
     int verbose;
     int invert;
+    int blur;
+    float blur_factor;
     int blend_overlap;
-    int blend_offset;
-    int blend_constrain_min;
-    int blend_constrain_max;
+    blend_constraints_s red;
+    blend_constraints_s green;
+    blend_constraints_s blue;
     char *input_file;
     char *output_file;
 } config_s;
@@ -23,8 +32,14 @@ typedef struct
 {
     unsigned int width;
     unsigned int height;
+    unsigned int size;
     unsigned char *data;
 } image_data_s;
+
+int image_data_alloc_rgba32(
+        const unsigned int width,
+        const unsigned int height,
+        image_data_s * const image_data);
 
 void image_data_free(
         image_data_s * const image_data);
@@ -36,18 +51,6 @@ int read_grey8_png(
 int write_rgba32_png(
         const char * const filename,
         const image_data_s * const image_data);
-
-void blend_magnitude_rgb(
-        const config_s * const config,
-        const unsigned char magn,
-        unsigned char * const red,
-        unsigned char * const green,
-        unsigned char * const blue);
-
-int grey8_to_rgba32_alphamap(
-        const config_s * const config,
-        const image_data_s * const in,
-        image_data_s * const out);
 
 int generate_rgba32_alphamap(
         const config_s * const config,

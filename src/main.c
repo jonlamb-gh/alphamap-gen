@@ -13,13 +13,25 @@
 
 #include "util.h"
 
+// TODO - these will change
 enum option_kind
 {
     OPTION_VERBOSE = 1,
-    OPTION_INPUT_FILE = 2,
-    OPTION_OUTPUT_FILE = 3,
-    OPTION_INVERT = 4,
-    OPTION_BLEND_OVERLAP = 5
+    OPTION_INPUT_FILE,
+    OPTION_OUTPUT_FILE,
+    OPTION_INVERT,
+    OPTION_BLUR,
+    OPTION_BLUR_FACTOR,
+    OPTION_BLEND_OVERLAP,
+    OPTION_RED_OFFSET,
+    OPTION_RED_MIN,
+    OPTION_RED_MAX,
+    OPTION_GREEN_OFFSET,
+    OPTION_GREEN_MIN,
+    OPTION_GREEN_MAX,
+    OPTION_BLUE_OFFSET,
+    OPTION_BLUE_MIN,
+    OPTION_BLUE_MAX
 };
 
 int main(int argc, char **argv)
@@ -36,10 +48,22 @@ int main(int argc, char **argv)
     output_image_data.data = NULL;
 
     config.invert = 0;
+    config.blur = 0;
+    config.blur_factor = 1.0f / 9.0f;
     config.blend_overlap = 10;
-    config.blend_offset = 25;
-    config.blend_constrain_min = 100;
-    config.blend_constrain_max = 255;
+
+    const uint8_t default_offset = 25;
+    const uint8_t default_min = 100;
+    const uint8_t default_max = 255;
+    config.red.offset = default_offset;
+    config.red.min = default_min;
+    config.red.max = default_max;
+    config.green.offset = default_offset;
+    config.green.min = default_min;
+    config.green.max = default_max;
+    config.blue.offset = default_offset;
+    config.blue.min = default_min;
+    config.blue.max = default_max;
 
     config.input_file = (char*) "heightmap.png";
     config.output_file = (char*) "alphamap.png";
@@ -86,6 +110,24 @@ int main(int argc, char **argv)
             NULL
         },
         {
+            "blur",
+            'b',
+            POPT_ARG_NONE,
+            &config.blur,
+            OPTION_BLUR,
+            "Apply a blur filter",
+            NULL
+        },
+        {
+            "blur-factor",
+            '\0',
+            POPT_ARG_FLOAT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.blur_factor,
+            OPTION_BLUR,
+            "Blurring factor",
+            "f > 0"
+        },
+        {
             "blend-overlap",
             '\0',
             POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
@@ -93,6 +135,87 @@ int main(int argc, char **argv)
             OPTION_BLEND_OVERLAP,
             "Blending overlap value",
             "0:85"
+        },
+        {
+            "red-offset",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.red.offset,
+            OPTION_RED_OFFSET,
+            "Blending red offset value",
+            "0:255"
+        },
+        {
+            "red-min",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.red.min,
+            OPTION_RED_MIN,
+            "Blending red min value",
+            "0:255"
+        },
+        {
+            "red-max",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.red.max,
+            OPTION_RED_MAX,
+            "Blending red max value",
+            "0:255"
+        },
+        {
+            "green-offset",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.green.offset,
+            OPTION_GREEN_OFFSET,
+            "Blending green offset value",
+            "0:255"
+        },
+        {
+            "green-min",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.green.min,
+            OPTION_GREEN_MIN,
+            "Blending green min value",
+            "0:255"
+        },
+        {
+            "green-max",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.green.max,
+            OPTION_GREEN_MAX,
+            "Blending green max value",
+            "0:255"
+        },
+        {
+            "blue-offset",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.blue.offset,
+            OPTION_BLUE_OFFSET,
+            "Blending blue offset value",
+            "0:255"
+        },
+        {
+            "blue-min",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.blue.min,
+            OPTION_BLUE_MIN,
+            "Blending blue min value",
+            "0:255"
+        },
+        {
+            "blue-max",
+            '\0',
+            POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT,
+            &config.blue.max,
+            OPTION_BLUE_MAX,
+            "Blending blue max value",
+            "0:255"
         },
         POPT_AUTOHELP
         POPT_TABLEEND
